@@ -57,6 +57,12 @@
     return self;
 }
 
+- (void)setBackgroundImage:(UIImage *)backgroundImage {
+	//	if (backgroundImage)
+		[self setBackgroundColor:[UIColor colorWithPatternImage:backgroundImage]];
+		
+}
+
 - (void)setupRecognizer {
 	
 	UILongPressGestureRecognizer *gestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressGesture:)];
@@ -91,32 +97,45 @@
 		*/
 	}
 	if (guestureRecognizer.state == UIGestureRecognizerStateEnded) {
-		self.annotation.type = bombPlayer;
+		//self.annotation.type = flag;
+		self.annotation.flagged = YES;
+		self.annotation.selected = YES;
 		[self updateBox];
 	}
 	
 }
+
+
 - (void)updateBox {
+	self.textLabel.text = self.annotation.value;
+	self.annotation.selected = YES;
+#warning set background image incomplete
+	
 	UIColor *color = nil;
 	switch (self.annotation.type) {
 			//TODO: for each case set an image already loaded in memory
 		case bomb:
-			color = [UIColor redColor];
+			if (self.annotation.flagged == YES)
+				[self setBackgroundImage:flagImage];//TODO: flag image
+			else
+				[self setBackgroundImage:bombImage];
 			break;
 		case noBomb:
-			color = [UIColor greenColor];
+			if (self.annotation.flagged == YES)
+				[self setBackgroundImage:flagImage];//TODO: flag image
+			else
+				[self setBackgroundImage:emptyImage];
 			break;
 		case empty:
-			color = [UIColor lightGrayColor];
+			if (self.annotation.flagged == YES)
+				[self setBackgroundImage:flagImage];//TODO: flag image
+			else
+				[self setBackgroundImage:emptyAutoImage];
 			break;
-		case bombPlayer:
-			color = [UIColor blackColor];
 		default:
 			break;
 	}
-	self.backgroundColor = color;
-	self.textLabel.text = self.annotation.value;
-	self.annotation.selected = YES;
+	//self.backgroundColor = color;
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {

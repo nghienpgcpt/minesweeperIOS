@@ -10,8 +10,8 @@
 
 @protocol GameInfoProtocol <NSObject>
 
-- (void)handlePause;
-- (void)handleStart;
-- (void)handleStop;
+- (BOOL)handlePause;
+- (BOOL)handleStart;
+- (BOOL)handleStop;
 
 @end

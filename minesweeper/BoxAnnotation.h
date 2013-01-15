@@ -11,8 +11,8 @@
 typedef enum BoxAnnotationType {
 	bomb,
 	noBomb,
-	empty,
-	bombPlayer
+	empty
+	//flag
 } BoxAnnotationType;
 
 @interface BoxAnnotation : NSObject
@@ -24,5 +24,6 @@ typedef enum BoxAnnotationType {
 @property(nonatomic, assign)float height;
 @property(nonatomic, assign)BoxAnnotationType type;
 @property(nonatomic, assign)BOOL selected;
+@property(nonatomic, assign)BOOL flagged;
 
 @end

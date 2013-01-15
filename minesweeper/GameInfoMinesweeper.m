@@ -28,6 +28,9 @@
 
 - (void)awakeFromNib {
 	[super awakeFromNib];
+	
+	self.pauseImage = [UIImage imageNamed:@"pause-icon.png"];
+	self.playImage = [UIImage imageNamed:@"play-icon.png"];
 
 	[self.pauseButton addTarget:self action:@selector(handlePause:)
 							forControlEvents:UIControlEventTouchUpInside];
@@ -42,27 +45,27 @@
 - (void)handlePause:(id)sender {
 	if (self.isPause == NO) {
 		if ([self.delegate respondsToSelector:@selector(handlePause)])
-			//dispatch_async(dispatch_get_main_queue(), ^{
-				[self.delegate handlePause];
-		//});
-			self.isPause = YES;
+			if ([self.delegate handlePause]) {
+				self.isPause = YES;
+				[self.pauseButton setImage: self.playImage forState:UIControlStateNormal];
+			}
+
 	}
 	else {
 		if ([self.delegate respondsToSelector:@selector(handleStart)])
-			//dispatch_async(dispatch_get_main_queue(), ^{
-				[self.delegate handleStart];
-				//});
-		
-		self.isPause = NO;
+			if ([self.delegate handleStart]) {
+				self.isPause = NO;
+				[self.pauseButton setImage:self.pauseImage forState:UIControlStateNormal];
+			}
 	}
 	
 }
 
 - (void)handleStop:(id)sender {
 	if ([self.delegate respondsToSelector:@selector(handleStop)])
-		//dispatch_async(dispatch_get_main_queue(), ^{
-			[self.delegate handleStop];
-	//});
+		if ([self.delegate handleStop]) {
+			//INFO: do more stuff if needed
+		}
 }
 
 #pragma mark - logic
@@ -84,13 +87,40 @@
 	//});
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
-{
-    // Drawing code
+- (void)updateInfoWithBox:(UIBox *)box {
+	switch (box.annotation.type) {
+		case bomb:
+			if (box.annotation.flagged == YES)
+				//TODO: flag image
+				//else
+				//[self setBackgroundImage:bombImage];
+
+			//INFO: lost
+			break;
+		case noBomb:
+			//INFO: continue to play there is no bomb
+			break;
+		case empty:
+			//INFO: auto discovered box
+			break;
+			//case flag:
+			///			box.annotation.flagged
+			//INFO: flagged
+			break;
+		default:
+			break;
+	}
 }
-*/
+
+- (void)setTotalBombNumber:(int)totalBombNumber {
+	//TODO: update UI
+	_totalBombNumber = totalBombNumber;
+}
+
+- (void)setTotalEmptyCaseNumber:(int)totalEmptyCaseNumber {
+	//TODO: update UI
+	_totalEmptyCaseNumber = totalEmptyCaseNumber;
+}
+
 
 @end

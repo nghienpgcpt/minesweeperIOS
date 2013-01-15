@@ -21,6 +21,7 @@ typedef enum DirectionType {
 
 //@property(nonatomic, strong)UITextView *Text;
 @property(nonatomic, strong)UILabel *textLabel;
+@property(nonatomic, strong)UIImageView *imageView;
 @property(nonatomic, strong)BoxAnnotation *annotation;
 @property(nonatomic, assign)CGPoint initialCenter;
 @property(nonatomic, strong)id<BoxProtocol> delegate;
@@ -29,5 +30,7 @@ typedef enum DirectionType {
 - (void)updateBox;
 
 - (void)setupRecognizer;
+
+- (void)setBackgroundImage:(UIImage *)backgroundImage;
 
 @end

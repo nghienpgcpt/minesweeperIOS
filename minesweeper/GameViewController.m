@@ -12,6 +12,8 @@
 #import "BoxAnnotation.h"
 #import "GameInfoMinesweeper.h"
 
+#import "Global.h"
+
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 460
 
@@ -24,6 +26,7 @@
 #define SQUARE_RANGE 3
 #define LOOSE_VALUE -1
 
+
 @interface GameViewController ()
 
 @property (nonatomic, strong) UIView *containerView;
@@ -33,6 +36,7 @@
 @property (nonatomic, strong)NSMutableArray *boxAnnotationList;
 @property (nonatomic, strong)NSMutableArray *boxViewList;
 @property (nonatomic, assign)BOOL isStarted;
+@property(nonatomic, assign)BOOL isPaused;
 
 @end
 
@@ -41,20 +45,7 @@
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-		//self.BoxContainer = [[UIBoxContainer alloc] initWithFrame:CGRectMake(0, MARGIN_TOP, GAME_WIDTH, GAME_HEIGHT)];
-		//BoxContainer.delegate = self;
-		
-		//
-		
-		UIPanGestureRecognizer* panSwipeRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanSwipe:)];
-		panSwipeRecognizer.minimumNumberOfTouches = 2;
-		panSwipeRecognizer.maximumNumberOfTouches = 2;
-		panSwipeRecognizer.delegate = self;
-		
-		//[self.boxContainer addGestureRecognizer:panSwipeRecognizer];
-		
-		//
+    if (self) {	
 	}
 	return self;
 }
@@ -65,6 +56,10 @@
 
 - (void)awakeFromNib {
 	[super awakeFromNib];
+	bombImage = [UIImage imageNamed:@"mine-icon"];
+	flagImage = [UIImage imageNamed:@"flag-icon"];
+	emptyImage = [UIImage imageNamed:@"empty.png"];
+	emptyAutoImage = [UIImage imageNamed:@"empty-auto.png"];
 }
 
 - (void)viewDidLoad
@@ -74,6 +69,7 @@
 	
 	
 	self.gameInfoView.delegate = self;
+	self.isPaused = NO;
 	[self setupGrid];
 	
 }
@@ -86,8 +82,8 @@
 	float gameWidth = 9;
 	float gameHeight = 12;
 	
-	float boxWidth = GAME_WIDTH / gameWidth;
-	float boxHeight = (GAME_HEIGHT - MARGIN_TOP) / gameHeight;
+	float boxWidth = 57;//GAME_WIDTH / gameWidth;
+	float boxHeight = 57;//(GAME_HEIGHT - MARGIN_TOP) / gameHeight;
 	
 	//INFO: set the scroll view
 	CGSize containerSize = CGSizeMake(gameWidth * boxWidth, (gameHeight + 1) * boxHeight);
@@ -100,6 +96,9 @@
 
 	
 	NSLog(@"size of 1 box -> width:%f - height:%f", boxWidth, boxHeight);
+	
+	int totalBombNumber = 0;
+	int totalBoxNumber = 0;
 	
 	for (float y = 0; y <= gameHeight; y++) {
 		for (float x = 0; x < gameWidth; x++) {
@@ -118,20 +117,27 @@
 			boxAnnotation.height = boxHeight;
 			boxAnnotation.type = (randDifficulty == 0 ? bomb : empty);
 			boxAnnotation.selected = NO;
+			boxAnnotation.flagged = NO;
 			//
 			[self.boxAnnotationList addObject:boxAnnotation];
+			
 			//
 			UIBox *box = [[UIBox alloc] initWithFrame:frameBox
 										boxAnnotation:boxAnnotation
 										  andDelegate:self];
-			//
+			//INFO: add object
 			[self.boxViewList addObject:box];
-			//
 			[self.containerView addSubview:box];
+
+			//INFO: setup informations
+			totalBombNumber += (boxAnnotation.type == bomb ? 1 : 0);
 		}
 		NSLog(@"___");
 	}
 	self.scrollView.contentSize = containerSize;
+	[self.gameInfoView setTotalBombNumber:totalBombNumber];
+	[self.gameInfoView setTotalEmptyCaseNumber:totalBoxNumber];
+	
 	[self start];
 }
 
@@ -204,18 +210,28 @@
 }
 
 
-- (BOOL)showBox:(BoxAnnotation *)boxAnnotation {
+- (BOOL)showBox:(BoxAnnotation *)boxAnnotation auto:(BOOL)autoEnable {
 	BOOL result = NO;
-	if (boxAnnotation.selected == YES)
-		return result;
-	
+	//	if (boxAnnotation.selected == YES)
+	//	return result;
+		
 	NSInteger bombNumberTowardBox = [self bombNumberTowardBox:boxAnnotation];
 	UIBox *box = [self boxViewAtX:boxAnnotation.x andY:boxAnnotation.y];
 	
-	if (boxAnnotation.type == bomb) {//INFO: loose
+	
+	if (boxAnnotation.flagged == YES && box.annotation.selected == YES && autoEnable == NO) {
+		[self.gameInfoView updateInfoWithBox:box];
+		[box setBackgroundImage:nil];
+		box.annotation.selected = NO;
+		boxAnnotation.flagged = NO;
+	}
+	else if (boxAnnotation.selected == YES)
+		return result;
+	else if (boxAnnotation.type == bomb) {//INFO: loose
 		if (box) {
 			box.annotation.value = @"-1";
 			[box updateBox];
+			[self.gameInfoView updateInfoWithBox:box];
 			
 			result = NO;
 		}
@@ -233,7 +249,7 @@
 				for (NSInteger x = startX; x < startX + SQUARE_RANGE; x++) {
 					BoxAnnotation *boxAnnotation = [self boxAnnotationAtX:x andY:y];
 					if (boxAnnotation)
-						[self showBox:boxAnnotation];
+						[self showBox:boxAnnotation auto:YES];
 				}
 			}
 			
@@ -245,7 +261,9 @@
 				   //TODO:  update progress in gameInfoView
 			box.annotation.type = noBomb;
 			box.annotation.value = [NSString stringWithFormat:@"%d", bombNumberTowardBox];
+
 			[box updateBox];
+			[self.gameInfoView updateInfoWithBox:box];
 			
 			result = YES;
 		}
@@ -255,8 +273,10 @@
 
 - (BOOL)didSelectBox:(BoxAnnotation *)boxAnnotation {
 	NSLog(@"Select box at x:%d - y:%d", boxAnnotation.x, boxAnnotation.y);
-	
-	return [self showBox:boxAnnotation];
+	if (self.isPaused == NO) {
+		return [self showBox:boxAnnotation auto:NO];
+	}
+	return NO;
 }
 
 
@@ -295,17 +315,20 @@
 
 #pragma mark - GameInfoProtocol
 
-- (void)handlePause {
+- (BOOL)handlePause {
 	NSLog(@"Pause");
+	return [self pause];
 }
 
-- (void)handleStart {
+- (BOOL)handleStart {
 	NSLog(@"Start");
+	return [self restart];
+	//	self start
 }
 
-- (void)handleStop {
+- (BOOL)handleStop {
 	NSLog(@"Stop");
-	[self stop];
+	return [self stop];
 }
 
 #pragma mark - Game
@@ -321,12 +344,23 @@
 	return NO;
 }
 
+- (BOOL)restart {
+	if (self.isStarted == YES) {
+		self.timeTimer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(handleTimeTimer) userInfo:nil repeats:YES];
+		[[NSRunLoop mainRunLoop] addTimer:self.timeTimer forMode:NSRunLoopCommonModes];
+		self.isPaused = NO;
+		return YES;
+	}
+	return NO;
+}
+
 - (BOOL)pause {
 	if (self.isStarted == YES) {
 		//TODO: invalidate the timer [OK]
 		[self.timeTimer invalidate];
+		self.isPaused = YES;
+		[self.scrollView setBackgroundColor:[UIColor blackColor]];
 		//TODO: display a choice between stop or restart the game
-		//TODO: set self.isStarted = NO; if pause
 		return YES;
 	}
 	return NO;
@@ -340,10 +374,27 @@
 	return YES;
 }
 
+#pragma mark - handle Timer
+
 - (void)handleTimeTimer {
 	//dispatch_async(dispatch_get_main_queue(), ^{
 		[self.gameInfoView performSelectorInBackground:@selector(updateTimer) withObject:nil];
 	//});
+}
+
+#pragma mark - 
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+	
+	NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
+	
+    if ([title isEqualToString:@"Cancel"]) {
+		
+	}
+	else {
+		//		[self handleBackHome];
+		//[NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(handleBackHome) userInfo:nil repeats:NO];
+	}
 }
 
 

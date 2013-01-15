@@ -15,5 +15,6 @@
 @synthesize width, height;
 @synthesize type;
 @synthesize selected;
+@synthesize flagged;
 
 @end

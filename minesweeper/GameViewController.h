@@ -20,4 +20,6 @@
 
 @property (nonatomic, strong) NSTimer *timeTimer;
 
+//@property (nonatomic, strong) UIImage *bombImage;
+
 @end
