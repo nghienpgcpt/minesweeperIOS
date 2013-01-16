@@ -7,8 +7,12 @@
 //
 
 #import "OptionsViewController.h"
+#import "MinesweeperAppDelegate.h"
+#import "Options.h"
 
 @interface OptionsViewController ()
+
+@property (nonatomic, strong) Options *options;
 
 @end
 
@@ -32,6 +36,33 @@
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+	
+	
+	NSError *error;
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Options"
+											  inManagedObjectContext:[MinesweeperAppDelegate appDelegate].managedObjectContext];
+	[fetchRequest setEntity:entity];
+	NSArray *fetchedObjects = [[MinesweeperAppDelegate appDelegate].managedObjectContext executeFetchRequest:fetchRequest error:&error];
+	self.options = [fetchedObjects lastObject];
+	self.levelSegmentedControl.selectedSegmentIndex = [self.options.level intValue];
+	self.sizeSegmentedControl.selectedSegmentIndex = [self.options.size intValue];
+	for (Options *item in fetchedObjects) {
+		NSLog(@"level: %@", item.level);
+		
+	}
+
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+	[super viewWillDisappear:animated];
+	
+	self.options.level = [NSNumber numberWithInt:self.levelSegmentedControl.selectedSegmentIndex];
+	self.options.size = [NSNumber numberWithInt:self.sizeSegmentedControl.selectedSegmentIndex];
+
+	NSError *error;
+	if (![[MinesweeperAppDelegate appDelegate].managedObjectContext save:&error])
+		NSLog(@"Error saving !! -> %@", error);
 }
 
 - (void)didReceiveMemoryWarning
@@ -117,5 +148,6 @@
      [self.navigationController pushViewController:detailViewController animated:YES];
      */
 }
+
 
 @end

@@ -19,15 +19,20 @@
 @property (nonatomic, strong) IBOutlet UIButton *stopButton;
 @property (nonatomic, strong) IBOutlet UIButton *pauseButton;
 @property (nonatomic, strong) IBOutlet UILabel *timeLabel;
-@property (nonatomic, strong) IBOutlet UIProgressView *mineProgressView; //INFO: for the remaining mine
+
 @property (nonatomic, strong) IBOutlet UIProgressView *boxProgressView;//INFO: for the remaining box
+@property (nonatomic, strong) IBOutlet UIProgressView *flagProgressView;
 
 @property (nonatomic, strong) id<GameInfoProtocol> delegate;
 
-@property(nonatomic, assign) int totalBombNumber;
-@property(nonatomic, assign) int totalEmptyCaseNumber;
+@property(nonatomic, assign) float totalBombNumber;
+@property(nonatomic, assign) float totalBoxNumber;
+
+@property (nonatomic, assign)float discoveredFlagNumber;
 
 - (void)updateTimer;
 - (void)updateInfoWithBox:(UIBox *)box;
+
+- (void)setup;
 
 @end

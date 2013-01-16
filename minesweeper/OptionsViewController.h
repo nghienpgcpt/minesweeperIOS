@@ -9,5 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface OptionsViewController : UITableViewController
+@property (strong, nonatomic) IBOutlet UISegmentedControl *levelSegmentedControl;
+@property (strong, nonatomic) IBOutlet UISegmentedControl *sizeSegmentedControl;
 
 @end

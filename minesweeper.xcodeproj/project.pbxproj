@@ -36,7 +36,7 @@
 		90226B1A16A5ADE4005C6BAE /* win-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 90226B1316A5ADE4005C6BAE /* win-icon@2x.png */; };
 		90226B1C16A5B18F005C6BAE /* empty-auto.png in Resources */ = {isa = PBXBuildFile; fileRef = 90226B1B16A5B18F005C6BAE /* empty-auto.png */; };
 		9061F0F4169FA8CB000BBE7D /* OptionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9061F0F3169FA8CB000BBE7D /* OptionsViewController.m */; };
-		9061F0F8169FA928000BBE7D /* ScoreRecordsListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9061F0F7169FA928000BBE7D /* ScoreRecordsListViewController.m */; };
+		9061F0F8169FA928000BBE7D /* ScoreRecordListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9061F0F7169FA928000BBE7D /* ScoreRecordListViewController.m */; };
 		9061F0FE169FAB38000BBE7D /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9061F0FD169FAB38000BBE7D /* GameViewController.m */; };
 		9061F109169FAD34000BBE7D /* BoxAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 9061F103169FAD34000BBE7D /* BoxAnnotation.m */; };
 		9061F10A169FAD34000BBE7D /* UIBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 9061F106169FAD34000BBE7D /* UIBox.m */; };
@@ -45,8 +45,15 @@
 		9061F112169FB19D000BBE7D /* Global.m in Sources */ = {isa = PBXBuildFile; fileRef = 9061F111169FB19D000BBE7D /* Global.m */; };
 		9061F116169FC95E000BBE7D /* GameInfoMinesweeper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9061F115169FC95E000BBE7D /* GameInfoMinesweeper.m */; };
 		9061F11D169FDC05000BBE7D /* pause-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 9061F11A169FDC05000BBE7D /* pause-icon.png */; };
-		9061F11E169FDC05000BBE7D /* play-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 9061F11B169FDC05000BBE7D /* play-icon.png */; };
 		9061F11F169FDC05000BBE7D /* stop-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 9061F11C169FDC05000BBE7D /* stop-icon.png */; };
+		90BD88F216A5FB2800C54764 /* MinesweeperModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 90BD88F016A5FB2700C54764 /* MinesweeperModel.xcdatamodeld */; };
+		90BD88F616A5FCDF00C54764 /* Options.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BD88F516A5FCDF00C54764 /* Options.m */; };
+		90BD88F916A5FCFB00C54764 /* ScoreRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BD88F816A5FCFB00C54764 /* ScoreRecord.m */; };
+		90BD890116A5FF8900C54764 /* ScoreRecordDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BD890016A5FF8900C54764 /* ScoreRecordDataController.m */; };
+		90BD890316A6032400C54764 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90BD890216A6032400C54764 /* CoreData.framework */; };
+		90BD890716A63E0C00C54764 /* skull-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 90BD890416A63E0C00C54764 /* skull-icon.png */; };
+		90BD890816A63E0C00C54764 /* heart-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 90BD890516A63E0C00C54764 /* heart-icon.png */; };
+		90BD890916A63E0C00C54764 /* cup-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 90BD890616A63E0C00C54764 /* cup-icon.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -86,8 +93,8 @@
 		9054B514169FE35E008DE154 /* GameInfoProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameInfoProtocol.h; sourceTree = "<group>"; };
 		9061F0F2169FA8CB000BBE7D /* OptionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OptionsViewController.h; path = minesweeper/OptionsViewController.h; sourceTree = "<group>"; };
 		9061F0F3169FA8CB000BBE7D /* OptionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OptionsViewController.m; path = minesweeper/OptionsViewController.m; sourceTree = "<group>"; };
-		9061F0F6169FA928000BBE7D /* ScoreRecordsListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScoreRecordsListViewController.h; path = minesweeper/ScoreRecordsListViewController.h; sourceTree = "<group>"; };
-		9061F0F7169FA928000BBE7D /* ScoreRecordsListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScoreRecordsListViewController.m; path = minesweeper/ScoreRecordsListViewController.m; sourceTree = "<group>"; };
+		9061F0F6169FA928000BBE7D /* ScoreRecordListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScoreRecordListViewController.h; path = minesweeper/ScoreRecordListViewController.h; sourceTree = "<group>"; };
+		9061F0F7169FA928000BBE7D /* ScoreRecordListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScoreRecordListViewController.m; path = minesweeper/ScoreRecordListViewController.m; sourceTree = "<group>"; };
 		9061F0FC169FAB38000BBE7D /* GameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameViewController.h; path = minesweeper/GameViewController.h; sourceTree = "<group>"; };
 		9061F0FD169FAB38000BBE7D /* GameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GameViewController.m; path = minesweeper/GameViewController.m; sourceTree = "<group>"; };
 		9061F102169FAD34000BBE7D /* BoxAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BoxAnnotation.h; sourceTree = "<group>"; };
@@ -104,8 +111,18 @@
 		9061F114169FC95E000BBE7D /* GameInfoMinesweeper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameInfoMinesweeper.h; sourceTree = "<group>"; };
 		9061F115169FC95E000BBE7D /* GameInfoMinesweeper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameInfoMinesweeper.m; sourceTree = "<group>"; };
 		9061F11A169FDC05000BBE7D /* pause-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "pause-icon.png"; sourceTree = "<group>"; };
-		9061F11B169FDC05000BBE7D /* play-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "play-icon.png"; sourceTree = "<group>"; };
 		9061F11C169FDC05000BBE7D /* stop-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stop-icon.png"; sourceTree = "<group>"; };
+		90BD88F116A5FB2800C54764 /* MinesweeperModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MinesweeperModel.xcdatamodel; sourceTree = "<group>"; };
+		90BD88F416A5FCDF00C54764 /* Options.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Options.h; sourceTree = "<group>"; };
+		90BD88F516A5FCDF00C54764 /* Options.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Options.m; sourceTree = "<group>"; };
+		90BD88F716A5FCFB00C54764 /* ScoreRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScoreRecord.h; sourceTree = "<group>"; };
+		90BD88F816A5FCFB00C54764 /* ScoreRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScoreRecord.m; sourceTree = "<group>"; };
+		90BD88FF16A5FF8900C54764 /* ScoreRecordDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScoreRecordDataController.h; sourceTree = "<group>"; };
+		90BD890016A5FF8900C54764 /* ScoreRecordDataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScoreRecordDataController.m; sourceTree = "<group>"; };
+		90BD890216A6032400C54764 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		90BD890416A63E0C00C54764 /* skull-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "skull-icon.png"; sourceTree = "<group>"; };
+		90BD890516A63E0C00C54764 /* heart-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "heart-icon.png"; sourceTree = "<group>"; };
+		90BD890616A63E0C00C54764 /* cup-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cup-icon.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +130,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90BD890316A6032400C54764 /* CoreData.framework in Frameworks */,
 				9016ECF6169D9132007BED9D /* UIKit.framework in Frameworks */,
 				9016ECF8169D9132007BED9D /* Foundation.framework in Frameworks */,
 				9016ECFA169D9132007BED9D /* CoreGraphics.framework in Frameworks */,
@@ -125,6 +143,7 @@
 		9016ECE6169D9132007BED9D = {
 			isa = PBXGroup;
 			children = (
+				90BD88FA16A5FD0600C54764 /* model */,
 				9016ECFB169D9132007BED9D /* minesweeper */,
 				9016ECF4169D9132007BED9D /* Frameworks */,
 				9016ECF2169D9132007BED9D /* Products */,
@@ -209,6 +228,10 @@
 				90226B0D16A5ADE4005C6BAE /* pause-icon.png */,
 				90226B0E16A5ADE4005C6BAE /* play-icon.png */,
 				9061F11A169FDC05000BBE7D /* pause-icon.png */,
+				9061F11C169FDC05000BBE7D /* stop-icon.png */,
+				90BD890416A63E0C00C54764 /* skull-icon.png */,
+				90BD890516A63E0C00C54764 /* heart-icon.png */,
+				90BD890616A63E0C00C54764 /* cup-icon.png */,
 			);
 			name = icon;
 			sourceTree = "<group>";
@@ -232,8 +255,8 @@
 		9061F0EF169FA851000BBE7D /* Score Records */ = {
 			isa = PBXGroup;
 			children = (
-				9061F0F6169FA928000BBE7D /* ScoreRecordsListViewController.h */,
-				9061F0F7169FA928000BBE7D /* ScoreRecordsListViewController.m */,
+				9061F0F6169FA928000BBE7D /* ScoreRecordListViewController.h */,
+				9061F0F7169FA928000BBE7D /* ScoreRecordListViewController.m */,
 			);
 			name = "Score Records";
 			sourceTree = "<group>";
@@ -324,10 +347,23 @@
 			isa = PBXGroup;
 			children = (
 				90226AF916A5AD6B005C6BAE /* Main */,
-				9061F11B169FDC05000BBE7D /* play-icon.png */,
-				9061F11C169FDC05000BBE7D /* stop-icon.png */,
 			);
 			name = Assets;
+			sourceTree = "<group>";
+		};
+		90BD88FA16A5FD0600C54764 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				90BD88F716A5FCFB00C54764 /* ScoreRecord.h */,
+				90BD88F816A5FCFB00C54764 /* ScoreRecord.m */,
+				90BD88F416A5FCDF00C54764 /* Options.h */,
+				90BD88F516A5FCDF00C54764 /* Options.m */,
+				90BD88FF16A5FF8900C54764 /* ScoreRecordDataController.h */,
+				90BD890016A5FF8900C54764 /* ScoreRecordDataController.m */,
+				90BD88F016A5FB2700C54764 /* MinesweeperModel.xcdatamodeld */,
+				90BD890216A6032400C54764 /* CoreData.framework */,
+			);
+			name = model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -389,7 +425,6 @@
 				9016ED0F169D9132007BED9D /* MainStoryboard_iPhone.storyboard in Resources */,
 				9016ED12169D9132007BED9D /* MainStoryboard_iPad.storyboard in Resources */,
 				9061F11D169FDC05000BBE7D /* pause-icon.png in Resources */,
-				9061F11E169FDC05000BBE7D /* play-icon.png in Resources */,
 				9061F11F169FDC05000BBE7D /* stop-icon.png in Resources */,
 				90226B0316A5ADC2005C6BAE /* flag-icon.png in Resources */,
 				90226B0416A5ADC2005C6BAE /* flag-icon@2x.png in Resources */,
@@ -407,6 +442,9 @@
 				90226B1916A5ADE4005C6BAE /* win-icon.png in Resources */,
 				90226B1A16A5ADE4005C6BAE /* win-icon@2x.png in Resources */,
 				90226B1C16A5B18F005C6BAE /* empty-auto.png in Resources */,
+				90BD890716A63E0C00C54764 /* skull-icon.png in Resources */,
+				90BD890816A63E0C00C54764 /* heart-icon.png in Resources */,
+				90BD890916A63E0C00C54764 /* cup-icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -421,7 +459,7 @@
 				9016ED06169D9132007BED9D /* MinesweeperAppDelegate.m in Sources */,
 				9016ED1D169D93AF007BED9D /* MinesweeperViewController.m in Sources */,
 				9061F0F4169FA8CB000BBE7D /* OptionsViewController.m in Sources */,
-				9061F0F8169FA928000BBE7D /* ScoreRecordsListViewController.m in Sources */,
+				9061F0F8169FA928000BBE7D /* ScoreRecordListViewController.m in Sources */,
 				9061F0FE169FAB38000BBE7D /* GameViewController.m in Sources */,
 				9061F109169FAD34000BBE7D /* BoxAnnotation.m in Sources */,
 				9061F10A169FAD34000BBE7D /* UIBox.m in Sources */,
@@ -429,6 +467,10 @@
 				9061F10F169FAEC6000BBE7D /* GraphicTools.m in Sources */,
 				9061F112169FB19D000BBE7D /* Global.m in Sources */,
 				9061F116169FC95E000BBE7D /* GameInfoMinesweeper.m in Sources */,
+				90BD88F216A5FB2800C54764 /* MinesweeperModel.xcdatamodeld in Sources */,
+				90BD88F616A5FCDF00C54764 /* Options.m in Sources */,
+				90BD88F916A5FCFB00C54764 /* ScoreRecord.m in Sources */,
+				90BD890116A5FF8900C54764 /* ScoreRecordDataController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -557,6 +599,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		90BD88F016A5FB2700C54764 /* MinesweeperModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				90BD88F116A5FB2800C54764 /* MinesweeperModel.xcdatamodel */,
+			);
+			currentVersion = 90BD88F116A5FB2800C54764 /* MinesweeperModel.xcdatamodel */;
+			name = MinesweeperModel.xcdatamodeld;
+			path = minesweeper/MinesweeperModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 9016ECE8169D9132007BED9D /* Project object */;
 }

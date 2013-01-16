@@ -9,8 +9,10 @@
 #import <Foundation/Foundation.h>
 
 @class BoxAnnotation;
+@class UIBox;
 
 @protocol BoxProtocol <NSObject>
 - (BOOL)didSelectBox:(BoxAnnotation *)boxAnnotation;
+- (void)didPushFlag:(UIBox *)box;
 
 @end

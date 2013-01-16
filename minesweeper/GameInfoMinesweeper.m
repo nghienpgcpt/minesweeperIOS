@@ -11,6 +11,8 @@
 @interface GameInfoMinesweeper ()
 
 @property (nonatomic, assign)BOOL isPause;
+@property (nonatomic, assign)int discoveredBoxNumber;
+@property (nonatomic, assign)int secondsElapsed;
 
 @end
 
@@ -31,13 +33,20 @@
 	
 	self.pauseImage = [UIImage imageNamed:@"pause-icon.png"];
 	self.playImage = [UIImage imageNamed:@"play-icon.png"];
-
-	[self.pauseButton addTarget:self action:@selector(handlePause:)
-							forControlEvents:UIControlEventTouchUpInside];
-	[self.stopButton addTarget:self action:@selector(handleStop:)
-						   forControlEvents:UIControlEventTouchUpInside];
 	
+	[self.pauseButton addTarget:self action:@selector(handlePause:)
+			   forControlEvents:UIControlEventTouchUpInside];
+	[self.stopButton addTarget:self action:@selector(handleStop:)
+			  forControlEvents:UIControlEventTouchUpInside];
+	[self setup];
+}
+
+- (void)setup {
 	self.isPause = NO;
+	self.secondsElapsed = 0;
+	self.discoveredBoxNumber = 0;
+	self.discoveredFlagNumber = 0;
+	[self updateProgress];
 }
 
 #pragma mark - handle
@@ -49,7 +58,7 @@
 				self.isPause = YES;
 				[self.pauseButton setImage: self.playImage forState:UIControlStateNormal];
 			}
-
+		
 	}
 	else {
 		if ([self.delegate respondsToSelector:@selector(handleStart)])
@@ -71,55 +80,66 @@
 #pragma mark - logic
 
 - (void)updateTimer {
-	static int secondsElapsed;
 	
-	secondsElapsed += 1;
-	int forHours = secondsElapsed / 3600;
-	int remainder = secondsElapsed % 3600;
+	self.secondsElapsed += 1;
+	int forHours = self.secondsElapsed / 3600;
+	int remainder = self.secondsElapsed % 3600;
 	int forMinutes = remainder / 60;
 	int forSeconds = remainder % 60;
 	
-	//dispatch_async(dispatch_get_main_queue(), ^{
-		if (forHours > 0)
-			self.timeLabel.text = [NSString stringWithFormat:@"%02d:%02d:%02d", forHours, forMinutes, forSeconds];
-		else
-			self.timeLabel.text = [NSString stringWithFormat:@"%02d:%02d", forMinutes, forSeconds];
-	//});
+	if (forHours > 0)
+		self.timeLabel.text = [NSString stringWithFormat:@"%02d:%02d:%02d", forHours, forMinutes, forSeconds];
+	else
+		self.timeLabel.text = [NSString stringWithFormat:@"%02d:%02d", forMinutes, forSeconds];
 }
 
-- (void)updateInfoWithBox:(UIBox *)box {
-	switch (box.annotation.type) {
-		case bomb:
-			if (box.annotation.flagged == YES)
-				//TODO: flag image
-				//else
-				//[self setBackgroundImage:bombImage];
+- (void)updateProgress {
+	
+	self.boxProgressView.progress = self.discoveredBoxNumber / self.totalBoxNumber;
 
-			//INFO: lost
-			break;
-		case noBomb:
-			//INFO: continue to play there is no bomb
-			break;
-		case empty:
-			//INFO: auto discovered box
-			break;
-			//case flag:
-			///			box.annotation.flagged
-			//INFO: flagged
-			break;
-		default:
-			break;
+	self.flagProgressView.progress = self.discoveredFlagNumber / self.totalBombNumber;
+
+	//INFO: did win
+	if (self.totalBombNumber != 0 &&
+		self.discoveredBoxNumber == self.totalBoxNumber &&
+		self.discoveredFlagNumber == self.totalBombNumber) {
+		if ([self.delegate respondsToSelector:@selector(didWinWithTimeInSeconds:)]) {
+			[self.delegate didWinWithTimeInSeconds:self.secondsElapsed];
+		}
 	}
 }
 
-- (void)setTotalBombNumber:(int)totalBombNumber {
+- (void)updateInfoWithBox:(UIBox *)box {
+
+	if (box.annotation.flagged == YES) {
+		[self updateProgress];
+	}
+	else {
+		self.discoveredBoxNumber++;
+		[self updateProgress];
+		if (box.annotation.type == bomb) {
+			if ([self.delegate respondsToSelector:@selector(didLostWithTimeInSeconds:)]) {
+				[self.delegate didLostWithTimeInSeconds:self.secondsElapsed];
+			}
+		}
+	}
+}
+
+- (void)setTotalBombNumber:(float)totalBombNumber {
 	//TODO: update UI
 	_totalBombNumber = totalBombNumber;
 }
 
-- (void)setTotalEmptyCaseNumber:(int)totalEmptyCaseNumber {
+- (void)setTotalBoxNumber:(float)totalBoxNumber {
 	//TODO: update UI
-	_totalEmptyCaseNumber = totalEmptyCaseNumber;
+	_totalBoxNumber = totalBoxNumber;
+}
+
+- (void)setDiscoveredFlagNumber:(float)discoveredFlagNumber {
+	if (discoveredFlagNumber != 0)
+		_discoveredBoxNumber += (discoveredFlagNumber > _discoveredFlagNumber ? 1 : -1);
+	_discoveredFlagNumber = discoveredFlagNumber;
+
 }
 
 

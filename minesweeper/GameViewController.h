@@ -13,13 +13,11 @@
 @class UIBoxContainer;
 @class GameInfoMinesweeper;
 
-@interface GameViewController : UIViewController <BoxProtocol, UIGestureRecognizerDelegate, GameInfoProtocol>
+@interface GameViewController : UIViewController <UIGestureRecognizerDelegate, UIAlertViewDelegate, BoxProtocol, GameInfoProtocol>
 
 @property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
 @property (strong, nonatomic) IBOutlet GameInfoMinesweeper *gameInfoView;
 
 @property (nonatomic, strong) NSTimer *timeTimer;
-
-//@property (nonatomic, strong) UIImage *bombImage;
 
 @end

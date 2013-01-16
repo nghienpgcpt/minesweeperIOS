@@ -101,6 +101,8 @@
 		self.annotation.flagged = YES;
 		self.annotation.selected = YES;
 		[self updateBox];
+		if ([self.delegate respondsToSelector:@selector(didPushFlag:)])
+			[self.delegate didPushFlag:self];
 	}
 	
 }

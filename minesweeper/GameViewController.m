@@ -12,6 +12,11 @@
 #import "BoxAnnotation.h"
 #import "GameInfoMinesweeper.h"
 
+#import "Options.h"
+
+#import "ScoreRecord.h"
+#import "MinesweeperAppDelegate.h"
+
 #import "Global.h"
 
 #define SCREEN_WIDTH 320
@@ -34,9 +39,10 @@
 - (void)centerScrollViewContents;
 
 @property (nonatomic, strong)NSMutableArray *boxAnnotationList;
-@property (nonatomic, strong)NSMutableArray *boxViewList;
 @property (nonatomic, assign)BOOL isStarted;
 @property(nonatomic, assign)BOOL isPaused;
+
+@property (nonatomic, strong) Options *options;
 
 @end
 
@@ -67,16 +73,29 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
 	
-	
 	self.gameInfoView.delegate = self;
 	self.isPaused = NO;
 	[self setupGrid];
-	
+	[self.scrollView addSubview:self.containerView];
 }
 
 - (void)setupGrid {
 	
 	// Custom initialization
+	//INFO: get Option
+	NSError *error;
+	
+	NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+	NSEntityDescription *entity = [NSEntityDescription entityForName:@"Options"
+											  inManagedObjectContext:[MinesweeperAppDelegate appDelegate].managedObjectContext];
+	[fetchRequest setEntity:entity];
+	NSArray *fetchedObjects = [[MinesweeperAppDelegate appDelegate].managedObjectContext executeFetchRequest:fetchRequest error:&error];
+	self.options = [fetchedObjects lastObject];
+	for (Options *item in fetchedObjects) {
+		NSLog(@"level: %@", item.level);
+		
+	}
+	NSLog(@"Options -> level: %@ | size: %@", self.options.level, self.options.size);
 	
 	//INFO: define ellement's size
 	float gameWidth = 9;
@@ -88,26 +107,35 @@
 	//INFO: set the scroll view
 	CGSize containerSize = CGSizeMake(gameWidth * boxWidth, (gameHeight + 1) * boxHeight);
     self.containerView = [[UIView alloc] initWithFrame:(CGRect){.origin=CGPointMake(0.0f, 0.0f), .size=containerSize}];
-    [self.scrollView addSubview:self.containerView];
+	
+	//INFO: remoove subviews if needed
+	for (UIView *view in self.scrollView.subviews) {
+		if ([view isKindOfClass:[UIView class]])
+			for (UIView *boxView in view.subviews)
+				if ([boxView isKindOfClass:[UIBox class]]) {
+					[boxView removeFromSuperview];
+				}
+	}
 	
 	//INFO: setup each box of the grid
+		
+	[self.boxAnnotationList removeAllObjects];
+	
 	self.boxAnnotationList = [[NSMutableArray alloc] init];
-	self.boxViewList = [[NSMutableArray alloc] init];
 
+	//NSLog(@"size of 1 box -> width:%f - height:%f", boxWidth, boxHeight);
 	
-	NSLog(@"size of 1 box -> width:%f - height:%f", boxWidth, boxHeight);
-	
-	int totalBombNumber = 0;
-	int totalBoxNumber = 0;
+	float totalBombNumber = 0;
+	float totalBoxNumber = 0;
 	
 	for (float y = 0; y <= gameHeight; y++) {
 		for (float x = 0; x < gameWidth; x++) {
 			CGRect frameBox = CGRectMake(x * boxWidth, y * boxHeight, boxWidth, boxHeight);
 			
 			
-			NSInteger randDifficulty = arc4random() % 4;//INFO: mix modulo value to change level difficulty
+			NSInteger randDifficulty = arc4random() % [self.options.level intValue];//INFO: mix modulo value to change level difficulty
 			
-			NSLog(@"adding x:%f - y:%f", frameBox.origin.x, frameBox.origin.y);
+			//NSLog(@"adding x:%f - y:%f", frameBox.origin.x, frameBox.origin.y);
 			//
 			BoxAnnotation *boxAnnotation = [[BoxAnnotation alloc] init];
 			boxAnnotation.value = @"";
@@ -126,17 +154,20 @@
 										boxAnnotation:boxAnnotation
 										  andDelegate:self];
 			//INFO: add object
-			[self.boxViewList addObject:box];
 			[self.containerView addSubview:box];
 
 			//INFO: setup informations
 			totalBombNumber += (boxAnnotation.type == bomb ? 1 : 0);
+			totalBoxNumber += 1;
 		}
-		NSLog(@"___");
+		//NSLog(@"___");
 	}
 	self.scrollView.contentSize = containerSize;
+	//INFO: setup GameInfo
+	[self.gameInfoView setup];
 	[self.gameInfoView setTotalBombNumber:totalBombNumber];
-	[self.gameInfoView setTotalEmptyCaseNumber:totalBoxNumber];
+	[self.gameInfoView setTotalBoxNumber:totalBoxNumber];
+	
 	
 	[self start];
 }
@@ -180,12 +211,18 @@
 	return nil;
 }
 
-#pragma mark - BoxViewList
+#pragma mark - BoxView List
 
 - (UIBox *)boxViewAtX:(NSInteger)x andY:(NSInteger)y {
-	for (UIBox *box in self.boxViewList) {
-		if (box.annotation.x == x && box.annotation.y == y)
-			return box;
+	
+	for (UIView *view in self.scrollView.subviews) {
+		if ([view isKindOfClass:[UIView class]])
+			for (UIBox *boxView in view.subviews)
+				if ([boxView isKindOfClass:[UIBox class]]) {
+					if (boxView.annotation.x == x && boxView.annotation.y == y)
+						return boxView;
+
+				}
 	}
 	return nil;
 }
@@ -219,17 +256,20 @@
 	UIBox *box = [self boxViewAtX:boxAnnotation.x andY:boxAnnotation.y];
 	
 	
-	if (boxAnnotation.flagged == YES && box.annotation.selected == YES && autoEnable == NO) {
+	if (boxAnnotation.flagged == YES &&
+		box.annotation.selected == YES &&
+		autoEnable == NO) {
+		
+		self.gameInfoView.discoveredFlagNumber = self.gameInfoView.discoveredFlagNumber - 1 ;
 		[self.gameInfoView updateInfoWithBox:box];
-		[box setBackgroundImage:nil];
 		box.annotation.selected = NO;
 		boxAnnotation.flagged = NO;
+		[box setBackgroundImage:nil];
 	}
 	else if (boxAnnotation.selected == YES)
 		return result;
 	else if (boxAnnotation.type == bomb) {//INFO: loose
 		if (box) {
-			box.annotation.value = @"-1";
 			[box updateBox];
 			[self.gameInfoView updateInfoWithBox:box];
 			
@@ -271,6 +311,8 @@
 	return result;
 }
 
+#pragma mark - BoxProtocol
+
 - (BOOL)didSelectBox:(BoxAnnotation *)boxAnnotation {
 	NSLog(@"Select box at x:%d - y:%d", boxAnnotation.x, boxAnnotation.y);
 	if (self.isPaused == NO) {
@@ -279,6 +321,10 @@
 	return NO;
 }
 
+- (void)didPushFlag:(UIBox *)box {
+	self.gameInfoView.discoveredFlagNumber = self.gameInfoView.discoveredFlagNumber + 1;
+	[self.gameInfoView updateInfoWithBox:box];
+}
 
 #pragma mark - scroll
 
@@ -331,6 +377,80 @@
 	return [self stop];
 }
 
+- (void)didWinWithTimeInSeconds:(int)time {
+	[self.timeTimer invalidate];
+	//	if ([self stop]) {
+	
+	{
+		NSString *message;
+		UIAlertView *alert;
+		
+		int forHours = time / 3600;
+		int remainder = time % 3600;
+		int forMinutes = remainder / 60;
+		int forSeconds = remainder % 60;
+		
+
+		if (forHours > 0)
+			message = [NSString stringWithFormat:@"You WIN in %d Hours %d Minutes %d Seconds. Do you want to play again ?", forHours, forMinutes, forSeconds];
+		else if (forMinutes > 0)
+			message = [NSString stringWithFormat:@"You WIN in %d Minutes %d Seconds. Do you want to play again ?",  forMinutes, forSeconds];
+		else if (forSeconds >= 0)
+			message = [NSString stringWithFormat:@"You WIN in %d seconds. Do you want to play again ?", forSeconds];
+
+		alert = [[UIAlertView alloc] initWithTitle:@"You Win!" message:message delegate:self cancelButtonTitle:@"OK" otherButtonTitles:@"Cancel", nil];
+		[alert show];
+	}
+}
+
+- (void)didLostWithTimeInSeconds:(int)time {
+	//if ([self stop]) {
+	[self.timeTimer invalidate];
+	{
+		NSString *message;
+		UIAlertView *alert;
+		
+		int forHours = time / 3600;
+		int remainder = time % 3600;
+		int forMinutes = remainder / 60;
+		int forSeconds = remainder % 60;
+		
+
+		if (forHours > 0)
+			message = [NSString stringWithFormat:@"You LOST in %d Hours %d Minutes %d Seconds. Do you want to play again ?", forHours, forMinutes, forSeconds];
+		else if (forMinutes > 0)
+			message = [NSString stringWithFormat:@"You LOST in %d Minutes %d Seconds. Do you want to play again ?",  forMinutes, forSeconds];
+		else if (forSeconds >= 0)
+			message = [NSString stringWithFormat:@"You LOST in %d seconds. Do you want to play again ?", time];
+		
+		alert = [[UIAlertView alloc] initWithTitle:@"You LOST !" message:message delegate:self cancelButtonTitle:@"OK" otherButtonTitles:@"Cancel", nil];
+		[alert show];
+		
+		{
+			ScoreRecord *scoreRecord = [NSEntityDescription insertNewObjectForEntityForName:@"ScoreRecord" inManagedObjectContext:[MinesweeperAppDelegate appDelegate].managedObjectContext];
+			scoreRecord.date = [NSDate date];
+			scoreRecord.level = self.options.level;
+			scoreRecord.size = self.options.size;
+		
+			NSError *error;
+			if (![[MinesweeperAppDelegate appDelegate].managedObjectContext save:&error])
+				NSLog(@"Saving error: %@", error);
+			
+			NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+			NSEntityDescription *entity = [NSEntityDescription entityForName:@"ScoreRecord"
+													  inManagedObjectContext:[MinesweeperAppDelegate appDelegate].managedObjectContext];
+			[fetchRequest setEntity:entity];
+			
+			NSArray *fetchedObjects = [[MinesweeperAppDelegate appDelegate].managedObjectContext executeFetchRequest:fetchRequest error:&error];
+			for (ScoreRecord *item in fetchedObjects) {
+				NSLog(@"level: %@", item.level);
+				NSLog(@"level: %@", item.score);
+				
+			}
+		}
+	}
+}
+
 #pragma mark - Game
 
 - (BOOL)start {
@@ -359,7 +479,7 @@
 		//TODO: invalidate the timer [OK]
 		[self.timeTimer invalidate];
 		self.isPaused = YES;
-		[self.scrollView setBackgroundColor:[UIColor blackColor]];
+		//[self.scrollView setBackgroundColor:[UIColor blackColor]];
 		//TODO: display a choice between stop or restart the game
 		return YES;
 	}
@@ -382,14 +502,16 @@
 	//});
 }
 
-#pragma mark - 
+
+#pragma mark - UIAlertView delegate
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
 	
 	NSString *title = [alertView buttonTitleAtIndex:buttonIndex];
 	
-    if ([title isEqualToString:@"Cancel"]) {
-		
+    if ([title isEqualToString:@"OK"]) {
+		//		self.isStarted = NO;
+		[self viewDidLoad];
 	}
 	else {
 		//		[self handleBackHome];

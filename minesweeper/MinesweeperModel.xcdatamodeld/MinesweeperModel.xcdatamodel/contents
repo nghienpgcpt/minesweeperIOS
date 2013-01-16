@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="" userDefinedModelVersionIdentifier="minesweeper" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1810" systemVersion="12C60" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Options" representedClassName="Options" syncable="YES">
+        <attribute name="level" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="size" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <entity name="ScoreRecord" representedClassName="ScoreRecord" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="level" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="score" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="size" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="ScoreRecord" positionX="160" positionY="192" width="128" height="120"/>
+        <element name="Options" positionX="160" positionY="192" width="128" height="75"/>
+    </elements>
+</model>

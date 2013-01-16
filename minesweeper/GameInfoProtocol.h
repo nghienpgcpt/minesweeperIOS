@@ -14,4 +14,7 @@
 - (BOOL)handleStart;
 - (BOOL)handleStop;
 
+- (void)didWinWithTimeInSeconds:(int)time;
+- (void)didLostWithTimeInSeconds:(int)time;
+
 @end
